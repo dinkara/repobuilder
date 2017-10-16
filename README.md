@@ -180,6 +180,8 @@ $this->userRepo->findByEmail($email);
 ```
 This can only be used for "findBy" function and it is recommended to use it only in combination with attributes that are unique, because it returns only first record.
 
+## Adding custom function to your repositories
+
 If you want to add custom or override existing functions in your repositories, this can be done easily by changing interface and class for specific repository. 
 
 Let's have a look at our User example:
@@ -255,4 +257,4 @@ Repository pattern in this library is meant to cache state of your model object.
 
 Do note that not all functions are meant to save state (for example when you have complex queries that return collection of data), in that case you should clear state of your model and just return eloquent result.
 
-__All suggestions and advices are welcome! So please send us your feedback and we will try to improve this library__
+### __All suggestions and advices are welcome! So please send us your feedback and we will try to improve this library__
