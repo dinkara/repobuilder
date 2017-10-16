@@ -1,7 +1,7 @@
 {
     "name": "dinkara/repobuilder",
     "type": "library",
-    "description": ":package_description",
+    "description": "Create Migration,Model and Repository from console",
     "keywords": [
         "dinkara",
         "repobuilder"
@@ -10,9 +10,8 @@
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": ":author_email",
-            "homepage": ":author_website",
+            "name": "Dinkara",
+            "email": "dinkicnikola@yahoo.com",
             "role": "Developer"
         }
     ],
