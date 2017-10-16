@@ -37,7 +37,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Dinkara\\RepoBuilder\\PackagerServiceProvider"
+                "Dinkara\\RepoBuilder\\RepositoryBuilderServiceProvider"
             ]
         }
     }
