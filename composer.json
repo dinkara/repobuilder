@@ -3,8 +3,20 @@
     "type": "library",
     "description": "Create Migration,Model and Repository from console",
     "keywords": [
-        "dinkara",
-        "repobuilder"
+        "Laravel",
+        "Repository pattern",
+        "OOP",
+        "Eloquent",
+        "PHP",
+        "DB",
+        "repos",
+        "repository",
+        "repo",
+        "builder",
+        "query",
+        "command",
+        "console",
+        "artisan"
     ],
     "homepage": "https://github.com/dinkara/repobuilder",
     "license": "MIT",
