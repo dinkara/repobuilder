@@ -1,6 +1,6 @@
 <?php
 
-namespace dinkara\repobuilder;
+namespace Dinkara\RepoBuilder;
 
 use Illuminate\Support\ServiceProvider;
 use Dinkara\RepoBuilder\Console\RepositoryBuilder;
