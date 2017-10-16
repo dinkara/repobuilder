@@ -23,7 +23,7 @@ abstract class BaseBuilder {
     const PATH = "";
     protected $patterns;
     
-    protected $template_path = "//packages//dinkara//repobuilder//src//Templates//";    
+    protected $template_path = "//vendor//dinkara//repobuilder//src//Templates//";    
     protected $base_save_path = "";
     protected $filename = "";    
     
