@@ -1,9 +1,8 @@
 # RepositoryBuilder
 
-Repobuilder is addon for PHP Laravel framework that implements Repository pattern and adds an extra level for database communication in our project architecture. Instead of accessing models and writing queries in your Controller classes or Models, you should place them here. This way you will create single access point with controlled set of functions to your database. 
+Repobuilder is addon for PHP Laravel framework that implements Repository pattern and adds an extra level for database communication in our project architecture. Instead of accessing models and writing queries in your Controller classes or Models, you should place them here. This way you will create single access point with controlled set of functions to your database. Library also has necessary Laravel commands for easy creation of complete set of classes and files (migrations, models and repositories).
 
 Main advantages are:
-
 	* Code reusability
 	* Code transparency
 	* Global usage	
