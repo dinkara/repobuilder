@@ -11,7 +11,7 @@ And the following snippet to specify path to private repository
 	"repositories": [
 		{
 			"type" : "git",
-			"url" : "https://dzale@bitbucket.org/apibuilder/repositorybuilder.git"
+			"url" : "https://github.com/dinkara/repobuilder.git"
 		}
 	],
 ```
@@ -22,7 +22,7 @@ And then run
 composer update
 ```
 
-If you do not run Laravel 5.5 (or higher), then add the service provider in `config/app.php`:
+Add the service provider in `config/app.php`:
 
 ```php
 Dinkara\RepoBuilder\RepositoryBuilderServiceProvider::class,
