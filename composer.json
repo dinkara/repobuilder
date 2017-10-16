@@ -10,9 +10,8 @@
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": ":author_email",
-            "homepage": ":author_website",
+            "name": ":Dinkara",
+            "email": ":dinkicnikola@yahoo.com",
             "role": "Developer"
         }
     ],
@@ -32,13 +31,6 @@
     "autoload-dev": {
         "psr-4": {
             "Dinkara\\RepoBuilder\\": "tests"
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Dinkara\\RepoBuilder\\PackagerServiceProvider"
-            ]
         }
     }
 }
