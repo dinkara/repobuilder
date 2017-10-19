@@ -35,8 +35,18 @@ class RepositoryBuilder extends Command
     {
         parent::__construct();
     }
+    
     /**
-     * Execute the console command.
+     * Execute the console command. Laravel <5.5
+     *
+     * @return mixed
+     */
+    public function fire(){
+        $this->handle();
+    }
+    
+    /**
+     * Execute the console command. Laravel >=5.5
      *
      * @return mixed
      */

@@ -3,20 +3,11 @@
     "type": "library",
     "description": "Create Migration,Model and Repository from console",
     "keywords": [
-        "Laravel",
-        "Repository pattern",
-        "OOP",
-        "Eloquent",
-        "PHP",
-        "DB",
-        "repos",
-        "repository",
-        "repo",
-        "builder",
-        "query",
-        "command",
-        "console",
-        "artisan"
+        "laravel",
+        "repository pattern",
+        "laravel repository pattern",
+        "eloquent",
+        "repository"
     ],
     "homepage": "https://github.com/dinkara/repobuilder",
     "license": "MIT",
@@ -24,6 +15,11 @@
         {
             "name": "Dinkara",
             "email": "dinkicnikola@yahoo.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Dzale",
+            "email": "ndzakovic@yahoo.com",
             "role": "Developer"
         }
     ],
