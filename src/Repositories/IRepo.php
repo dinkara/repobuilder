@@ -38,5 +38,9 @@ interface IRepo {
     
     function delete();
     
+    function searchAndPaginate($q, $orderBy = null, $perPage = 10);
+    
+    function search($q, $orderBy = null);
+    
     function __call($name, $arguments);
 }

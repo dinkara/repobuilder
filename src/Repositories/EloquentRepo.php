@@ -23,6 +23,8 @@ abstract class EloquentRepo implements IRepo {
     protected $attributes;
     
     const FIND_BY = "findBy";
+    
+    protected $orderDirections = ["asc","desc"];
 
     abstract public function model();
 
@@ -127,6 +129,21 @@ abstract class EloquentRepo implements IRepo {
         return $this->model->delete();
     }
     
+    public function searchAndPaginate($q, $orderBy = null, $perPage = 10) {
+        if($query = $this->makeSearchQuery($q, $orderBy)){
+            return $query->paginate($perPage);
+        }
+        return null;
+        
+    }
+    
+    public function search($q, $orderBy = null) {
+        if($query = $this->makeSearchQuery($q, $orderBy)){
+            return $query->get();
+        }
+        return null;
+    }
+    
     public function __call($name, $arguments) {
         $this->initialize();  
         $column = Str::snake(str_replace(self::FIND_BY, '', $name)); 
@@ -153,5 +170,30 @@ abstract class EloquentRepo implements IRepo {
                 
         //log error or throw exception
     }
+    
 
+    /**
+     * Generate query from input data
+     * 
+     * @param type $q
+     * @param type $orderBy
+     * @return type
+     */
+    private function makeSearchQuery($q, $orderBy = null) {
+
+        $query = $this->model()->search($q);        
+        if($orderBy){
+            $orderByArray = explode(",", $orderBy);
+            $t=0;
+            for($i=0;$i<count($orderByArray);$i++) {
+                if(in_array($orderByArray[$i], $this->orderDirections)){
+                    for($j=$t;$j<$i;$j++){
+                        $query = $query->orderBy($orderByArray[$j], $orderByArray[$i]);                        
+                    }
+                    $t=$i+1;
+                }
+            }                                                
+        }  
+        return $query;
+    }
 }
