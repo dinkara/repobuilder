@@ -181,7 +181,7 @@ abstract class EloquentRepo implements IRepo {
      */
     private function makeSearchQuery($q, $orderBy = null) {
 
-        $query = $this->model()->search($q);        
+        $query = $this->model()->search($q, false);        
         if($orderBy){
             $orderByArray = explode(",", $orderBy);
             $t=0;
