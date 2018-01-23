@@ -17,4 +17,29 @@ trait ApiModel{
         return isset($this->displayable) ? $this->displayable : [];
     }
     
+    /**
+     * Generate query from input data
+     * 
+     * @param  \Illuminate\Database\Eloquent\Builder  $relation
+     * @param type $q exp. ?q=test
+     * @param type $orderBy exp. &orderBy=name,caption,asc,id,desc
+     * @return type
+     */
+    public function searchRelation(Relation  $relation, $q, $orderBy = null) {
+        $query = $relation->search(["*" . $q . "*"], false);
+
+        if($orderBy){
+            $orderByArray = explode(",", $orderBy);
+            $t=0;
+            for($i=0;$i<count($orderByArray);$i++) {
+                if(in_array($orderByArray[$i], $this->orderDirections)){
+                    for($j=$t;$j<$i;$j++){
+                        $query = $query->orderBy($orderByArray[$j], $orderByArray[$i]);                        
+                    }
+                    $t=$i+1;
+                }
+            }                                                
+        }  
+        return $query;
+    }
 }
