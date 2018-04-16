@@ -27,7 +27,8 @@ trait ApiModel{
      * @return type
      */
     public function searchRelation(Relation  $relation, $q, $orderBy = null) {
-        $query = $relation->search(["*" . $q . "*"], false);
+        $query = $q ? $relation->search(["*" . $q . "*"], false) : $relation;
+
         $orderDirections = ['asc', 'desc'];
         if($orderBy){
             $orderByArray = explode(",", $orderBy);
