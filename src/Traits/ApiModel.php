@@ -8,15 +8,16 @@
 
 namespace Dinkara\RepoBuilder\Traits;
 use Sofa\Eloquence\Eloquence;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 trait ApiModel{
       
     use Eloquence;
-    
+
     public function getDisplayable() {
         return isset($this->displayable) ? $this->displayable : [];
     }
-    
+
     /**
      * Generate query from input data
      * 
@@ -27,12 +28,12 @@ trait ApiModel{
      */
     public function searchRelation(Relation  $relation, $q, $orderBy = null) {
         $query = $relation->search(["*" . $q . "*"], false);
-
+        $orderDirections = ['asc', 'desc'];
         if($orderBy){
             $orderByArray = explode(",", $orderBy);
             $t=0;
             for($i=0;$i<count($orderByArray);$i++) {
-                if(in_array($orderByArray[$i], $this->orderDirections)){
+                if(in_array($orderByArray[$i], $orderDirections)){
                     for($j=$t;$j<$i;$j++){
                         $query = $query->orderBy($orderByArray[$j], $orderByArray[$i]);                        
                     }
