@@ -41,6 +41,10 @@ interface IRepo {
     function searchAndPaginate($q, $orderBy = null, $perPage = 10);
     
     function search($q, $orderBy = null);
+
+    public function findBy($data = []);
+
+    public function searchBy($data = []);
     
     function __call($name, $arguments);
 }

@@ -26,7 +26,7 @@ trait ApiModel{
      * @param type $orderBy exp. &orderBy=name,caption,asc,id,desc
      * @return type
      */
-    public function searchRelation(Relation  $relation, $q, $orderBy = null) {
+    public function searchRelation(Relation $relation, $q, $orderBy = null) {
         $query = $q ? $relation->search(["*" . $q . "*"], false) : $relation;
 
         $orderDirections = ['asc', 'desc'];
@@ -44,4 +44,26 @@ trait ApiModel{
         }  
         return $query;
     }
+
+    /**
+     * @param Relation $relation - base query [hasOne, hasMany, belongsTo, belongsToMany]
+     * @param null $q  exp. ?q=test
+     * @param null $orderBy exp. &orderBy=name,caption,asc,id,desc
+     * @param array $searchFields axp. ['name' => '?', 'operator' => '??', 'value' => '???'] => associative array explanation ? - name of amodel attribute, ?? - operator can be [=, !=, like, not like, etc], ??? - wanted value of attribute
+     * @return type Relation
+     */
+    protected function baseSearchQuery(Relation $relation, $q = null, $orderBy = null, $searchFields = []){
+
+        if(is_array($searchFields)) {
+            foreach ($searchFields as $field) {
+                $field['operator'] = key_exists('operator', $field) ? $field['operator'] : '=';
+                $relation->where($field['name'], $field['operator'], $field['value']);
+            }
+        }
+        if($q === null && $orderBy === null){
+            return $relation;
+        }
+        return $this->searchRelation($relation, $q, $orderBy);
+    }
+
 }

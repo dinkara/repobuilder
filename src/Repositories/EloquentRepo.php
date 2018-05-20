@@ -143,6 +143,28 @@ abstract class EloquentRepo implements IRepo {
         }
         return null;
     }
+
+    public function findBy($data = []){
+        return $this->searchQuery($data)->first();
+    }
+
+    public function searchBy($data = []){
+        return $this->searchQuery($data)->get();
+    }
+
+    private function searchQuery($data = []){
+        if (!$this->model)
+            $this->initialize();
+
+        $query = $this->model;
+        if(is_array($data)){
+            foreach($data as $item){
+                $query = $query->where($item['key'], $item['operator'], $item['value']);
+            }
+        }
+
+        return $query;
+    }
     
     public function __call($name, $arguments) {
         $this->initialize();  
