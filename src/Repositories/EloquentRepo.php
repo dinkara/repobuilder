@@ -19,11 +19,11 @@ use Illuminate\Support\Str;
 abstract class EloquentRepo implements IRepo {
 
     protected $model;
-    
+
     protected $attributes;
-    
+
     const FIND_BY = "findBy";
-    
+
     protected $orderDirections = ["asc","desc"];
 
     abstract public function model();
@@ -69,21 +69,21 @@ abstract class EloquentRepo implements IRepo {
 
     public function all(){
         $this->initialize();
-        
+
         return $this->model->all();
     }
-    
+
     public function paginateAll($perPage = 10) {
         $this->initialize();
         return $this->model->paginate($perPage);
     }
 
     public function create($fields) {
-        
+
         $this->initialize();
 
-        $this->model->fill($fields);        
-        
+        $this->model->fill($fields);
+
         return $this->save();
     }
 
@@ -91,12 +91,10 @@ abstract class EloquentRepo implements IRepo {
         $this->initialize();
 
         $item = $this->find($id);
-        
+
         if (!$item) {
             return false;
         }
-
-        $this->model = $item;
 
         return $this->update($fields);
     }
@@ -105,9 +103,9 @@ abstract class EloquentRepo implements IRepo {
         if (!$this->model) {
             return false;
         }
-               
+
         $result = $this->model->update($fields);
-        
+
         return $this->finalize($result);
     }
 
@@ -120,7 +118,7 @@ abstract class EloquentRepo implements IRepo {
 
         return $this->finalize($result);
     }
-    
+
     public function delete() {
         if (!$this->model) {
             return false;
@@ -128,15 +126,15 @@ abstract class EloquentRepo implements IRepo {
 
         return $this->model->delete();
     }
-    
+
     public function searchAndPaginate($q, $orderBy = null, $perPage = 10) {
         if($query = $this->makeSearchQuery($q, $orderBy)){
             return $query->paginate($perPage);
         }
         return null;
-        
+
     }
-    
+
     public function search($q, $orderBy = null) {
         if($query = $this->makeSearchQuery($q, $orderBy)){
             return $query->get();
@@ -144,10 +142,18 @@ abstract class EloquentRepo implements IRepo {
         return null;
     }
 
+    /**
+     * @param $data ['key' => 'name', 'value' => 'Nick', 'operator' => '='] - operator is optional ( = is by default)
+     * @return first Object
+     */
     public function findBy($data = []){
         return $this->searchQuery($data)->first();
     }
 
+    /**
+     * @param $data ['key' => 'name', 'value' => 'Nick', 'operator' => '='] - operator is optional ( = is by default)
+     * @return array of Models
+     */
     public function searchBy($data = []){
         return $this->searchQuery($data)->get();
     }
@@ -159,23 +165,24 @@ abstract class EloquentRepo implements IRepo {
         $query = $this->model;
         if(is_array($data)){
             foreach($data as $item){
-                $query = $query->where($item['key'], $item['operator'], $item['value']);
+                $operator = key_exists('operator' , $item) ? $item['operator'] : '=';
+                $query = $query->where($item['key'], $operator, $item['value']);
             }
         }
 
         return $query;
     }
-    
+
     public function __call($name, $arguments) {
-        $this->initialize();  
-        $column = Str::snake(str_replace(self::FIND_BY, '', $name)); 
+        $this->initialize();
+        $column = Str::snake(str_replace(self::FIND_BY, '', $name));
         if(in_array($column, $this->attributes)){
             $this->model = $this->model->where($column, '=', $arguments[0])->first();
             return $this->finalize($this->model);
         }
         return [];
     }
-    
+
     //=========================
     //PROTECTED SECTION
     //=========================
@@ -189,14 +196,14 @@ abstract class EloquentRepo implements IRepo {
         if ($result) {
             return $this;
         }
-                
+
         //log error or throw exception
     }
-    
+
 
     /**
      * Generate query from input data
-     * 
+     *
      * @param type $q
      * @param type $orderBy
      * @return type
@@ -210,12 +217,12 @@ abstract class EloquentRepo implements IRepo {
             for($i=0;$i<count($orderByArray);$i++) {
                 if(in_array($orderByArray[$i], $this->orderDirections)){
                     for($j=$t;$j<$i;$j++){
-                        $query = $query->orderBy($orderByArray[$j], $orderByArray[$i]);                        
+                        $query = $query->orderBy($orderByArray[$j], $orderByArray[$i]);
                     }
                     $t=$i+1;
                 }
-            }                                                
-        }  
+            }
+        }
         return $query;
     }
 }

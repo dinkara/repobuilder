@@ -21,11 +21,11 @@ interface IRepo {
     function firstOrCreate($where);
 
     function fill($fields);
-    
+
     function find($id);
-    
+
     function all();
-    
+
     function paginateAll($perPage = 20);
 
     function create($fields);
@@ -33,18 +33,26 @@ interface IRepo {
     function findAndUpdate($id, $fields);
 
     function update($fields);
-    
+
     function save();
-    
+
     function delete();
-    
+
     function searchAndPaginate($q, $orderBy = null, $perPage = 10);
-    
+
     function search($q, $orderBy = null);
 
+    /**
+     * @param array ['key' => 'name', 'value' => 'Nick', 'operator' => '='] - operator is optional ( = is by default)
+     * @return first Object
+     */
     public function findBy($data = []);
 
+    /**
+     * @param array ['key' => 'name', 'value' => 'Nick', 'operator' => '='] - operator is optional ( = is by default)
+     * @return array of Models
+     */
     public function searchBy($data = []);
-    
+
     function __call($name, $arguments);
 }
