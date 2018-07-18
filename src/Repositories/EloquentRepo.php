@@ -166,7 +166,17 @@ abstract class EloquentRepo implements IRepo {
         if(is_array($data)){
             foreach($data as $item){
                 $operator = key_exists('operator' , $item) ? $item['operator'] : '=';
-                $query = $query->where($item['key'], $operator, $item['value']);
+                if($operator == 'in'){
+                    $query = $query->whereIn($item['key'], $item['value']);
+                } else if($operator == 'notin'){
+                    $query = $query->whereNotIn($item['key'], $item['value']);
+                } else if($operator == 'null'){
+                    $query = $query->whereNull($item['key']);
+                } else if($operator == 'notnull'){
+                    $query = $query->whereNotNull($item['key']);
+                }else{
+                    $query = $query->where($item['key'], $operator, $item['value']);
+                }
             }
         }
 

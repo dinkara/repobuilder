@@ -43,13 +43,13 @@ interface IRepo {
     function search($q, $orderBy = null);
 
     /**
-     * @param array ['key' => 'name', 'value' => 'Nick', 'operator' => '='] - operator is optional ( = is by default)
+     * @param Array ['key' => 'name', 'value' => 'Nick', 'operator' => '='] - operator is optional ( = is by default)
      * @return first Object
      */
     public function findBy($data = []);
 
     /**
-     * @param array ['key' => 'name', 'value' => 'Nick', 'operator' => '='] - operator is optional ( = is by default)
+     * @param Array ['key' => 'name', 'value' => 'Nick', 'operator' => '='] - operator is optional ( = is by default)
      * @return array of Models
      */
     public function searchBy($data = []);
