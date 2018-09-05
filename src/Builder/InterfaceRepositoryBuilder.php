@@ -19,19 +19,19 @@ class InterfaceRepositoryBuilder extends RepositoryBuilder{
     protected $prefix = "I";
     protected $sufix = "Repo";
 
-    public function __construct($name){
-        parent::__construct($name);  
+    public function __construct($name, $es = false){
+        parent::__construct($name, $es);
         $this->template_path .= $this->sufix . self::EXTENSION;
         $this->checkExisting();
-        
+
     }
-    
+
     protected function checkExisting(){
         if(!is_dir($this->base_save_path)){
             if(mkdir($this->base_save_path)){
-                
+
             }
         }
     }
-       
+
 }

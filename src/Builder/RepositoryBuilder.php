@@ -15,7 +15,7 @@
 namespace Dinkara\RepoBuilder\Builder;
 
 class RepositoryBuilder extends BaseBuilder{
-    
+
     const PATH = "Repositories//";
     const MODEL = self::START_SYMBOL . "model" . self::END_SYMBOL;
     const EXTENSION = ".php";
@@ -26,25 +26,25 @@ class RepositoryBuilder extends BaseBuilder{
     protected $patterns = [
         self::MODEL => '',
     ];
-    
-    public function __construct($name){
-        parent::__construct($name);  
+
+    public function __construct($name, $es = false){
+        parent::__construct($name, $es);
         $this->base_save_path = app_path(self::PATH);
         $this->checkExisting();
         $this->patterns[self::MODEL] = $this->modelName();
         $this->base_save_path .= $this->modelName() . "//";
         $this->filename = $this->prefix .$this->modelName() . $this->sufix . self::EXTENSION;
     }
-       
+
     public function save(){
         $this->parseAndSave();
     }
-    
+
     protected function checkExisting(){
         if(!is_dir($this->base_save_path)){
             if(mkdir($this->base_save_path)){
             }
         }
     }
-       
+
 }

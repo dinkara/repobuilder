@@ -15,7 +15,7 @@ class RepositoryBuilder extends Command
      *
      * @var string
      */
-    protected $signature = 'make:repo {name} {--model} {--migration} {--all}';
+    protected $signature = 'make:repo {name} {--model} {--migration} {--all} {--es}';
 
     /**
      * The console command description.
@@ -23,7 +23,7 @@ class RepositoryBuilder extends Command
      * @var string
      */
     protected $description = 'Create new repository classes EloquentName and INameRepo. ';
-    
+
     protected $bar;
 
     /**
@@ -35,7 +35,7 @@ class RepositoryBuilder extends Command
     {
         parent::__construct();
     }
-    
+
     /**
      * Execute the console command. Laravel <5.5
      *
@@ -44,7 +44,7 @@ class RepositoryBuilder extends Command
     public function fire(){
         $this->handle();
     }
-    
+
     /**
      * Execute the console command. Laravel >=5.5
      *
@@ -54,7 +54,7 @@ class RepositoryBuilder extends Command
     {
         $progress = $this->option('all') ? 4 : ($this->option('model') ? 3 : ($this->option('migration') ? 3 : 2) );
         $this->bar = $this->output->createProgressBar($progress);
-        
+
         $this->bar->start();
         if ($this->option('all')) {
             $this->input->setOption('model', true);
@@ -65,11 +65,11 @@ class RepositoryBuilder extends Command
         }
         if ($this->option('migration')) {
             $this->createMigration();
-        }      
-        $this->createRepository();
+        }
+        $this->createRepository($this->option('es'));
 
     }
-    
+
     /**
      * Create a model file for the repository.
      *
@@ -77,11 +77,11 @@ class RepositoryBuilder extends Command
      */
     protected function createModel()
     {
-        (new ModelBuilder($this->argument('name')))->save();  
+        (new ModelBuilder($this->argument('name')))->save();
         $this->bar->advance();
         $this->info(' Creating Model...');
     }
-    
+
     /**
      * Create a migration file for the model.
      *
@@ -90,28 +90,28 @@ class RepositoryBuilder extends Command
     protected function createMigration()
     {
         (new MigrationBuilder($this->argument('name')))->save();
-        
+
         $this->bar->advance();
         $this->info( ' Creating Migration...');
     }
-    
+
     /**
      * Create a repository.
      *
      * @return void
      */
-    protected function createRepository()
+    protected function createRepository($es)
     {
-        (new EloquentRepositoryBuilder($this->argument('name')))->save();    
+        (new EloquentRepositoryBuilder($this->argument('name'), $es))->save();
         $this->bar->advance();
         $this->info(' Creating RepositoryEloquent...');
-        (new InterfaceRepositoryBuilder($this->argument('name')))->save();
+        (new InterfaceRepositoryBuilder($this->argument('name'), $es))->save();
         $this->bar->advance();
         $this->info(' Creating RepositoryInterface...');
         $this->bar->finish();
         $this->info(' Finished');
     }
-    
+
     /**
      * Get the console command options.
      *
@@ -121,13 +121,13 @@ class RepositoryBuilder extends Command
     {
         return [
             ['all', 'all', InputOption::VALUE_NONE, 'Generate a migration and model for the repository'],
-            
+
             ['model', 'model', InputOption::VALUE_NONE, 'Create a new migration file for the repository.'],
 
             ['migration', 'migration', InputOption::VALUE_NONE, 'Create a new migration file for the model.'],
 
         ];
     }
-    
+
 
 }

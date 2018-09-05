@@ -18,8 +18,8 @@ class EloquentRepositoryBuilder extends RepositoryBuilder{
     protected $prefix = "Eloquent";
     protected $sufix = "";
 
-    public function __construct($name){
-        parent::__construct($name);  
+    public function __construct($name, $es = false ){
+        parent::__construct($name, $es);
         $this->template_path .= $this->prefix . self::EXTENSION;
         $this->checkExisting();
         
