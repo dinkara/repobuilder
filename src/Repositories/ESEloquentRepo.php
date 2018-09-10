@@ -28,7 +28,7 @@ abstract class ESEloquentRepo extends EloquentRepo implements IRepo, IESRepo {
     public function all(){
         $this->initialize();
 
-        return $this->model->search('')->all();
+        return $this->model->search('*')->all();
     }
 
     /**
@@ -39,7 +39,7 @@ abstract class ESEloquentRepo extends EloquentRepo implements IRepo, IESRepo {
      */
     public function paginateAll($perPage = 10) {
         $this->initialize();
-        return $this->model->search('')->paginate($perPage);
+        return $this->model->search('*')->paginate($perPage);
     }
 
     /**
@@ -70,7 +70,7 @@ abstract class ESEloquentRepo extends EloquentRepo implements IRepo, IESRepo {
         $this->initialize();
         $column = Str::snake(str_replace(self::FIND_BY_RAW, '', $name));
         if(in_array($column, $this->attributes)){
-            $this->model = $this->model->search('')->where($column, '=', $arguments[0])->first();
+            $this->model = $this->model->search('*')->where($column, '=', $arguments[0])->first();
             return $this->finalize($this->model);
         }
         return [];
@@ -84,6 +84,6 @@ abstract class ESEloquentRepo extends EloquentRepo implements IRepo, IESRepo {
     private function searchQueryRaw($data = []){
         if (!$this->model)
             $this->initialize();
-        return $this->baseSearchQuery($this->model->search(''), $data);
+        return $this->baseSearchQuery($this->model->search('*'), $data);
     }
 }
