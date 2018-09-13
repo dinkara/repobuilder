@@ -185,7 +185,7 @@ abstract class EloquentRepo implements IRepo {
 
     protected function initialize() {
         $this->model = $this->model();
-        $this->attributes = Schema::getColumnListing($this->model->getTable());
+        $this->attributes = Schema::connection($this->model->getConnectionName())->getColumnListing($this->model->getTable());
     }
 
     protected function finalize($result) {
