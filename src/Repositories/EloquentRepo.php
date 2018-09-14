@@ -201,28 +201,38 @@ abstract class EloquentRepo implements IRepo {
      *
      * @param $query
      * @param array $data
+     * @param array $sort
      * @return mixed
      */
-    protected function baseSearchQuery($query, $data = []){
+    protected function baseSearchQuery($query, $data = [], $sort = []){
         if(is_array($data)){
             foreach($data as $item){
-                $operator = key_exists('operator' , $item) ? $item['operator'] : '=';
-                if($operator == self::OPERATOR_IN){
-                    $query = $query->whereIn($item['key'], $item['value']);
-                } else if($operator == self::OPERATOR_NOT_IN){
-                    $query = $query->whereNotIn($item['key'], $item['value']);
-                } else if($operator == self::OPERATOR_NULL){
-                    $query = $query->whereNull($item['key']);
-                } else if($operator == self::OPERATOR_NOT_NULL){
-                    $query = $query->whereNotNull($item['key']);
-                } else if($operator == self::OPERATOR_BETWEEN){
-                    $query = $query->whereBetween($item['key'], [$item['value1'], $item['value2']]);
-                } else if($operator == self::OPERATOR_NOT_BETWEEN){
-                    $query = $query->whereNotBetween($item['key'], [$item['value1'], $item['value2']]);
-                } else if($operator == self::OPERATOR_COLUMN){
-                    $query = $query->whereColumn($item['key1'], $item['operator'], $item['key2']);
-                } else{
-                    $query = $query->where($item['key'], $operator, $item['value']);
+                if(in_array($item['key'], $this->attributes)) {
+                    $operator = key_exists('operator', $item) ? $item['operator'] : '=';
+                    if ($operator == self::OPERATOR_IN) {
+                        $query = $query->whereIn($item['key'], $item['value']);
+                    } else if ($operator == self::OPERATOR_NOT_IN) {
+                        $query = $query->whereNotIn($item['key'], $item['value']);
+                    } else if ($operator == self::OPERATOR_NULL) {
+                        $query = $query->whereNull($item['key']);
+                    } else if ($operator == self::OPERATOR_NOT_NULL) {
+                        $query = $query->whereNotNull($item['key']);
+                    } else if ($operator == self::OPERATOR_BETWEEN) {
+                        $query = $query->whereBetween($item['key'], [$item['value1'], $item['value2']]);
+                    } else if ($operator == self::OPERATOR_NOT_BETWEEN) {
+                        $query = $query->whereNotBetween($item['key'], [$item['value1'], $item['value2']]);
+                    } else if ($operator == self::OPERATOR_COLUMN) {
+                        $query = $query->whereColumn($item['key1'], $item['operator'], $item['key2']);
+                    } else {
+                        $query = $query->where($item['key'], $operator, $item['value']);
+                    }
+                }
+            }
+        }
+        if(is_array($sort)) {
+            foreach ($sort as $key => $value) {
+                if(in_array($key, $this->attributes)) {
+                    $query = $query->orderBy($key, $value ? 'asc' : 'desc');
                 }
             }
         }

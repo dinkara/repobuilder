@@ -60,10 +60,12 @@ abstract class ESEloquentRepo extends EloquentRepo implements IRepo, IESRepo {
 
     /**
      * @param $data ['key' => 'name', 'value' => 'Nick', 'operator' => '='] - operator is optional ( = is by default)
+     * @param array $sort ['key1' => true,'key2' => false ] - true means ASC, false DESC
+     * @param int $perPage
      * @return array of Models
      */
-    public function searchByPaginated($data = [], $perPage = 10){
-        return $this->searchQueryRaw($data)->paginate($perPage);
+    public function searchByPaginated($data = [], $sort = [], $perPage = 10){
+        return $this->searchQueryRaw($data, $sort)->paginate($perPage);
     }
 
     public function __call($name, $arguments) {
@@ -81,9 +83,9 @@ abstract class ESEloquentRepo extends EloquentRepo implements IRepo, IESRepo {
     //=========================
 
 
-    private function searchQueryRaw($data = []){
+    private function searchQueryRaw($data = [], $sort = []){
         if (!$this->model)
             $this->initialize();
-        return $this->baseSearchQuery($this->model->search('*'), $data);
+        return $this->baseSearchQuery($this->model->search('*'), $data, $sort);
     }
 }
