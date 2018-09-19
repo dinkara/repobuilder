@@ -24,17 +24,19 @@ interface IESRepo extends IRepo{
 
     /**
      * @param Array ['key' => 'name', 'value' => 'Nick', 'operator' => '='] - operator is optional ( = is by default)
+     * @param array $sort ['key1' => true,'key2' => false ] - true means ASC, false DESC
      * @return array of Models
      */
-    public function searchByRaw($data = []);
+    public function searchByRaw($data = [], $sort = []);
 
     /**
      * Search direct to Elastic Search. Return paginated items
      *
-     * @param Array ['key' => 'name', 'value' => 'Nick', 'operator' => '='] - operator is optional ( = is by default)
+     * @param $data ['key' => 'name', 'value' => 'Nick', 'operator' => '='] - operator is optional ( = is by default)
+     * @param array $sort ['key1' => true,'key2' => false ] - true means ASC, false DESC
      * @param int $perPage
      * @return array of Models
      */
-    public function searchByPaginated($data = [], $perPage = 10);
+    public function searchByPaginatedRaw($data = [], $sort = [], $perPage = 10);
 
 }

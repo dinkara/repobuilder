@@ -20,16 +20,6 @@ abstract class ESEloquentRepo extends EloquentRepo implements IRepo, IESRepo {
 
     const FIND_BY_RAW = "findByRaw";
 
-    /**
-     * Override base all to work with Elastic Search
-     *
-     * @return mixed
-     */
-    public function all(){
-        $this->initialize();
-
-        return $this->model->search('*')->all();
-    }
 
     /**
      * Override base pagginateALl to work with Elastic Search
@@ -37,7 +27,7 @@ abstract class ESEloquentRepo extends EloquentRepo implements IRepo, IESRepo {
      * @param int $perPage
      * @return mixed
      */
-    public function paginateAll($perPage = 10) {
+    public function paginateAllRaw($perPage = 10) {
         $this->initialize();
         return $this->model->search('*')->paginate($perPage);
     }
@@ -52,10 +42,11 @@ abstract class ESEloquentRepo extends EloquentRepo implements IRepo, IESRepo {
 
     /**
      * @param $data ['key' => 'name', 'value' => 'Nick', 'operator' => '='] - operator is optional ( = is by default)
+     * @param array $sort ['key1' => true,'key2' => false ] - true means ASC, false DESC
      * @return array of Models
      */
-    public function searchByRaw($data = []){
-        return $this->searchQueryRaw($data)->raw();
+    public function searchByRaw($data = [], $sort = []){
+        return $this->searchQueryRaw($data, $sort)->raw();
     }
 
     /**
@@ -64,7 +55,7 @@ abstract class ESEloquentRepo extends EloquentRepo implements IRepo, IESRepo {
      * @param int $perPage
      * @return array of Models
      */
-    public function searchByPaginated($data = [], $sort = [], $perPage = 10){
+    public function searchByPaginatedRaw($data = [], $sort = [], $perPage = 10){
         return $this->searchQueryRaw($data, $sort)->paginate($perPage);
     }
 

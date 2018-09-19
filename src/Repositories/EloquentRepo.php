@@ -142,7 +142,6 @@ abstract class EloquentRepo implements IRepo {
             return $query->paginate($perPage);
         }
         return null;
-
     }
 
     public function search($q, $orderBy = null) {
@@ -162,10 +161,21 @@ abstract class EloquentRepo implements IRepo {
 
     /**
      * @param $data ['key' => 'name', 'value' => 'Nick', 'operator' => '='] - operator is optional ( = is by default)
+     * @param array $sort ['key1' => true,'key2' => false ] - true means ASC, false DESC
      * @return array of Models
      */
-    public function searchBy($data = []){
-        return $this->searchQuery($data)->get();
+    public function searchBy($data = [], $sort = []){
+        return $this->searchQuery($data, $sort)->get();
+    }
+
+    /**
+     * @param $data ['key' => 'name', 'value' => 'Nick', 'operator' => '='] - operator is optional ( = is by default)
+     * @param array $sort ['key1' => true,'key2' => false ] - true means ASC, false DESC
+     * @param int $perPage
+     * @return array of Models
+     */
+    public function searchByPaginated($data = [], $sort = [], $perPage = 10){
+        return $this->searchQuery($data, $sort)->paginate($perPage);
     }
 
 

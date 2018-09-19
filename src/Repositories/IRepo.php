@@ -42,16 +42,10 @@ interface IRepo {
 
     function search($q, $orderBy = null);
 
-    /**
-     * @param Array ['key' => 'name', 'value' => 'Nick', 'operator' => '='] - operator is optional ( = is by default)
-     * @return first Object
-     */
+    public function searchByPaginated($data = [], $sort = [], $perPage = 10);
+
     public function findBy($data = []);
 
-    /**
-     * @param Array ['key' => 'name', 'value' => 'Nick', 'operator' => '='] - operator is optional ( = is by default)
-     * @return array of Models
-     */
     public function searchBy($data = []);
 
     function __call($name, $arguments);
