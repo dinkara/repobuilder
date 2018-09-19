@@ -61,6 +61,9 @@ abstract class ESEloquentRepo extends EloquentRepo implements IRepo, IESRepo {
 
     public function __call($name, $arguments) {
         $this->initialize();
+        if(strpos($name, self::FIND_BY_RAW) !== true){
+            return parent::__call($name, $arguments);
+        }
         $column = Str::snake(str_replace(self::FIND_BY_RAW, '', $name));
         if(in_array($column, $this->attributes)){
             $this->model = $this->model->search('*')->where($column, '=', $arguments[0])->first();
