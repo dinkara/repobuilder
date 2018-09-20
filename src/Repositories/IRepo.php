@@ -49,4 +49,6 @@ interface IRepo {
     public function searchBy($data = []);
 
     function __call($name, $arguments);
+
+    public function baseSearchQuery($query, $data = [], $sort = []);
 }

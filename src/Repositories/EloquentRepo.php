@@ -214,10 +214,10 @@ abstract class EloquentRepo implements IRepo {
      * @param array $sort
      * @return mixed
      */
-    protected function baseSearchQuery($query, $data = [], $sort = []){
+    public function baseSearchQuery($query, $data = [], $sort = []){
         if(is_array($data)){
             foreach($data as $item){
-                if(in_array($item['key'], $this->attributes)) {
+                //if(in_array($item['key'], $this->attributes)) {
                     $operator = key_exists('operator', $item) ? $item['operator'] : '=';
                     if ($operator == self::OPERATOR_IN) {
                         $query = $query->whereIn($item['key'], $item['value']);
@@ -236,7 +236,7 @@ abstract class EloquentRepo implements IRepo {
                     } else {
                         $query = $query->where($item['key'], $operator, $item['value']);
                     }
-                }
+                //}
             }
         }
         if(is_array($sort)) {
