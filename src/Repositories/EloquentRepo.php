@@ -283,6 +283,22 @@ abstract class EloquentRepo implements IRepo {
             return $this->sync($relation, $arguments[0], $detach);
         }
 
+        if(!$this->model){
+            $this->initialize();
+        }
+
+        if (in_array(Str::snake($name), $this->attributes)) {
+
+            $operator = '=';
+            if(count($arguments) > 1){
+                $operator = $arguments[1];
+            }
+
+            $this->model = $this->apply($this->model, $operator, Str::snake($name), $arguments[0]);
+
+            return $this->finalize($this->model);
+        }
+
         throw new BadMethodCallException("Method '$name' not implemented!");
     }
 
@@ -299,7 +315,19 @@ abstract class EloquentRepo implements IRepo {
             foreach($data as $item){
                 //if(in_array($item['key'], $this->attributes)) {
                     $operator = key_exists('operator', $item) ? $item['operator'] : '=';
-                    if ($operator == self::OPERATOR_IN) {
+
+                    $value = $item['value'];
+                    $key = $item['key'];
+                    if ($operator == self::OPERATOR_BETWEEN || $operator == self::OPERATOR_NOT_BETWEEN) {
+                        $value =  [$item['value1'], $item['value2']];
+                    } else if ($operator == self::OPERATOR_COLUMN) {
+                        $key = $item['key1'];
+                        $value =  $item['key2'];
+                    }
+
+                    $query = $this->apply($query, $operator, $key, $value);
+
+                    /*if ($operator == self::OPERATOR_IN) {
                         $query = $query->whereIn($item['key'], $item['value']);
                     } else if ($operator == self::OPERATOR_NOT_IN) {
                         $query = $query->whereNotIn($item['key'], $item['value']);
@@ -315,7 +343,7 @@ abstract class EloquentRepo implements IRepo {
                         $query = $query->whereColumn($item['key1'], $item['operator'], $item['key2']);
                     } else {
                         $query = $query->where($item['key'], $operator, $item['value']);
-                    }
+                    }*/
                 //}
             }
         }
@@ -374,6 +402,26 @@ abstract class EloquentRepo implements IRepo {
             }
         }
         return $query;
+    }
+
+    private function apply($query, $operator, $key, $value = null){
+        if ($operator == self::OPERATOR_IN) {
+            return $query->whereIn($key, $value);
+        } else if ($operator == self::OPERATOR_NOT_IN) {
+            return $query->whereNotIn($key, $value);
+        } else if ($operator == self::OPERATOR_NULL) {
+            return $query->whereNull($key);
+        } else if ($operator == self::OPERATOR_NOT_NULL) {
+            return $query->whereNotNull($key);
+        } else if ($operator == self::OPERATOR_BETWEEN) {
+            return $query->whereBetween($key, $value);
+        } else if ($operator == self::OPERATOR_NOT_BETWEEN) {
+            return $query->whereNotBetween($key, $value);
+        } else if ($operator == self::OPERATOR_COLUMN) {
+            return $query->whereColumn($key, $operator, $value);
+        } else {
+            return $query->where($key, $operator, $value);
+        }
     }
 
     private function searchQuery($data = []){
