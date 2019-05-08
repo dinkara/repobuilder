@@ -15,6 +15,7 @@ namespace Dinkara\RepoBuilder\Repositories;
  */
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use BadMethodCallException;
 
 abstract class EloquentRepo implements IRepo {
 
@@ -23,6 +24,7 @@ abstract class EloquentRepo implements IRepo {
     protected $attributes;
 
     const FIND_BY = "findBy";
+    const SYNC = "sync";
     //Available operators
     const OPERATOR_BETWEEN = "between";
     const OPERATOR_NOT_BETWEEN = "notbetween";
@@ -165,6 +167,13 @@ abstract class EloquentRepo implements IRepo {
         return $this->model->get();
     }
 
+    public function count() {
+        if(!$this->model) {
+            $this->initialize();
+        }
+        return $this->model->count();
+    }
+
     /**
      * @param $data ['key' => 'name', 'value' => 'Nick', 'operator' => '='] - operator is optional ( = is by default)
      * @return first Object
@@ -192,15 +201,89 @@ abstract class EloquentRepo implements IRepo {
         return $this->searchQuery($data, $sort)->paginate($perPage);
     }
 
+    /** Mass insert function for model
+     * @param array $data
+     * @return $this|bool
+     */
+    public function bulk(array $data = []){
+        $this->initialize();
+
+        return $this->finalize($this->model->insert($data));
+    }
+
+    /** Mass delete function for model
+     * @param array $data ids
+     * @return $this|bool
+     */
+    public function bulkDelete(array $data = []){
+        $this->initialize();
+
+        return $this->finalize($this->model->destroy($data));
+    }
+
+    /**
+     * Sync $relations with or without detaching
+     *
+     * @param $relation is name of model relation
+     * @param array $data [id => [attr1 => $value1, $attr2 => $value2], id2 => [attr1 => $value1, $attr2 => $value2]]
+     * @param $detach is flag to determine should sync() or syncWithoutDetaching() be used
+     * @return $this|bool
+     */
+    public function sync($relation , array $data = [], $detach = true){
+        if (!$this->model) {
+            return false;
+        }
+
+        $result = null;
+        if($detach){
+            $result = $this->model->{$relation}()->sync($data);
+        }
+        else{
+            $result = $this->model->{$relation}()->syncWithoutDetaching($data);
+        }
+
+        return $this->finalize($result);
+    }
+
+    public function __get( $key )
+    {
+        if ($this->model && in_array($key, $this->attributes)) {
+            return $this->model->{$key};
+        }
+
+        return null;
+    }
+
+    public function __set( $key, $value )
+    {
+        if ($this->model && in_array($key, $this->attributes)) {
+            $this->model->{$key} = $value;
+        }
+    }
 
     public function __call($name, $arguments) {
-        $this->initialize();
-        $column = Str::snake(str_replace(self::FIND_BY, '', $name));
-        if(in_array($column, $this->attributes)){
-            $this->model = $this->model->where($column, '=', $arguments[0])->first();
-            return $this->finalize($this->model);
+
+        //if findBY magic function is called
+        if(Str::startsWith($name, self::FIND_BY)) {
+            $this->initialize();
+            $column = Str::snake(str_replace(self::FIND_BY, '', $name));
+            if (in_array($column, $this->attributes)) {
+                $this->model = $this->model->where($column, '=', $arguments[0])->first();
+                return $this->finalize($this->model);
+            }
         }
-        return [];
+
+        //if sync magic function is called
+        if(Str::startsWith($name, self::SYNC)) {
+            $relation = lcfirst(str_replace(self::SYNC, '', $name));
+            $detach = true;
+            if(count($arguments) > 1){
+                $detach = $arguments[1];
+            }
+            return $this->sync($relation, $arguments[0], $detach);
+        }
+
+        throw new BadMethodCallException("Method '$name' not implemented!");
     }
 
     /**

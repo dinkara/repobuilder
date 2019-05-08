@@ -42,17 +42,25 @@ interface IRepo {
 
     function search($q, $orderBy = null);
 
-    public function searchByPaginated($data = [], $sort = [], $perPage = 10);
+    function searchByPaginated($data = [], $sort = [], $perPage = 10);
 
-    public function findBy($data = []);
+    function findBy($data = []);
 
-    public function searchBy($data = []);
+    function searchBy($data = []);
+
+    function paginate($perPage = 10);
+
+    function get();
+
+    function count();
+
+    function bulkDelete(array $data = []);
+
+    function bulk(array $data = []);
+
+    function sync($relation , array $data = [], $detach = true);
 
     function __call($name, $arguments);
 
-    public function baseSearchQuery($query, $data = [], $sort = []);
-
-    public function paginate($perPage = 10);
-
-    public function get();
+    function baseSearchQuery($query, $data = [], $sort = []);
 }
