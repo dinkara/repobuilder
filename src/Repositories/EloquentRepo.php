@@ -151,6 +151,20 @@ abstract class EloquentRepo implements IRepo {
         return null;
     }
 
+    public function paginate($perPage = 10) {
+        if(!$this->model) {
+            $this->initialize();
+        }
+        return $this->model->paginate($perPage);
+    }
+
+    public function get() {
+        if(!$this->model) {
+            $this->initialize();
+        }
+        return $this->model->get();
+    }
+
     /**
      * @param $data ['key' => 'name', 'value' => 'Nick', 'operator' => '='] - operator is optional ( = is by default)
      * @return first Object
@@ -187,23 +201,6 @@ abstract class EloquentRepo implements IRepo {
             return $this->finalize($this->model);
         }
         return [];
-    }
-
-    //=========================
-    //PROTECTED SECTION
-    //=========================
-
-    protected function initialize() {
-        $this->model = $this->model();
-        $this->attributes = Schema::connection($this->model->getConnectionName())->getColumnListing($this->model->getTable());
-    }
-
-    protected function finalize($result) {
-        if ($result) {
-            return $this;
-        }
-
-        //log error or throw exception
     }
 
     /**
@@ -250,6 +247,22 @@ abstract class EloquentRepo implements IRepo {
         return $query;
     }
 
+    //=========================
+    //PROTECTED SECTION
+    //=========================
+
+    protected function initialize() {
+        $this->model = $this->model();
+        $this->attributes = Schema::connection($this->model->getConnectionName())->getColumnListing($this->model->getTable());
+    }
+
+    protected function finalize($result) {
+        if ($result) {
+            return $this;
+        }
+
+        //log error or throw exception
+    }
 
     //=========================
     //PRIVATE SECTION

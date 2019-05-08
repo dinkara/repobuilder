@@ -26,7 +26,7 @@ interface IRepo {
 
     function all();
 
-    function paginateAll($perPage = 20);
+    function paginateAll($perPage = 10);
 
     function create($fields);
 
@@ -51,4 +51,8 @@ interface IRepo {
     function __call($name, $arguments);
 
     public function baseSearchQuery($query, $data = [], $sort = []);
+
+    public function paginate($perPage = 10);
+
+    public function get();
 }
