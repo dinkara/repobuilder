@@ -60,6 +60,8 @@ interface IRepo {
 
     function sync($relation , array $data = [], $detach = true);
 
+    function isAttachedTo($relation, $id);
+
     function __call($name, $arguments);
 
     function baseSearchQuery($query, $data = [], $sort = []);

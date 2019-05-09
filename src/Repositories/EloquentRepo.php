@@ -25,6 +25,7 @@ abstract class EloquentRepo implements IRepo {
 
     const FIND_BY = "findBy";
     const SYNC = "sync";
+    const IS_ATTACHED_TO = "isAttachedTo";
     //Available operators
     const OPERATOR_BETWEEN = "between";
     const OPERATOR_NOT_BETWEEN = "notbetween";
@@ -245,6 +246,21 @@ abstract class EloquentRepo implements IRepo {
         return $this->finalize($result);
     }
 
+
+    /** Checks if model is already attached to given relation
+     * @param $relation name of Model relation
+     * @param $id of related model
+     * @return bool
+     */
+    public function isAttachedTo($relation, $id){
+        //ovde bi trebao exception
+        if (!$this->model) {
+            return false;
+        }
+
+        return $this->model->{$relation}()->find($id) != null;
+    }
+
     public function __get( $key )
     {
         if ($this->model && in_array($key, $this->attributes)) {
@@ -262,6 +278,12 @@ abstract class EloquentRepo implements IRepo {
     }
 
     public function __call($name, $arguments) {
+
+        //if isAttachedTo magic function is called
+        if(Str::startsWith($name, self::IS_ATTACHED_TO)) {
+            $relation = Str::plural(lcfirst(str_replace(self::IS_ATTACHED_TO, '', $name)));
+            return $this->isAttachedTo($relation, $arguments[0]);
+        }
 
         //if findBY magic function is called
         if(Str::startsWith($name, self::FIND_BY)) {
