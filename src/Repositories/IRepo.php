@@ -16,6 +16,8 @@ interface IRepo {
 
     function model();
 
+    function setModel($model);
+
     function firstOrNew($where);
 
     function firstOrCreate($where);

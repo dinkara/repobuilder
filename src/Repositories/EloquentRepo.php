@@ -16,6 +16,7 @@ namespace Dinkara\RepoBuilder\Repositories;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use BadMethodCallException;
+use Dinkara\Utils\Filter;
 
 abstract class EloquentRepo implements IRepo {
 
@@ -37,6 +38,8 @@ abstract class EloquentRepo implements IRepo {
     const OPERATOR_GREAT = ">";
     const OPERATOR_LESS = "<";
 
+
+
     protected $orderDirections = ["asc","desc"];
 
     abstract public function model();
@@ -46,6 +49,10 @@ abstract class EloquentRepo implements IRepo {
             $this->initialize();
 
         return $this->model;
+    }
+
+    public function setModel($model) {
+        $this->model = $model;
     }
 
     public function firstOrNew($where) {
@@ -279,6 +286,14 @@ abstract class EloquentRepo implements IRepo {
 
     public function __call($name, $arguments) {
 
+        //Model relations
+        if(method_exists($this->model, $name)){
+            if(count($arguments) > 0){
+                return $this->model->{$name} (  ...$arguments );
+            }else{
+                return $this->model->{$name};
+            }
+        }
         //if isAttachedTo magic function is called
         if(Str::startsWith($name, self::IS_ATTACHED_TO)) {
             $relation = Str::plural(lcfirst(str_replace(self::IS_ATTACHED_TO, '', $name)));
@@ -321,6 +336,14 @@ abstract class EloquentRepo implements IRepo {
             return $this->finalize($this->model);
         }
 
+        if(method_exists($this, $name)){
+            return $this->{$name};
+        }
+
+        if(method_exists($this->model, $name)){
+            return $this->model->{$name};
+        }
+
         throw new BadMethodCallException("Method '$name' not implemented!");
     }
 
@@ -346,26 +369,7 @@ abstract class EloquentRepo implements IRepo {
                         $key = $item['key1'];
                         $value =  $item['key2'];
                     }
-
                     $query = $this->apply($query, $operator, $key, $value);
-
-                    /*if ($operator == self::OPERATOR_IN) {
-                        $query = $query->whereIn($item['key'], $item['value']);
-                    } else if ($operator == self::OPERATOR_NOT_IN) {
-                        $query = $query->whereNotIn($item['key'], $item['value']);
-                    } else if ($operator == self::OPERATOR_NULL) {
-                        $query = $query->whereNull($item['key']);
-                    } else if ($operator == self::OPERATOR_NOT_NULL) {
-                        $query = $query->whereNotNull($item['key']);
-                    } else if ($operator == self::OPERATOR_BETWEEN) {
-                        $query = $query->whereBetween($item['key'], [$item['value1'], $item['value2']]);
-                    } else if ($operator == self::OPERATOR_NOT_BETWEEN) {
-                        $query = $query->whereNotBetween($item['key'], [$item['value1'], $item['value2']]);
-                    } else if ($operator == self::OPERATOR_COLUMN) {
-                        $query = $query->whereColumn($item['key1'], $item['operator'], $item['key2']);
-                    } else {
-                        $query = $query->where($item['key'], $operator, $item['value']);
-                    }*/
                 //}
             }
         }
@@ -436,15 +440,33 @@ abstract class EloquentRepo implements IRepo {
         } else if ($operator == self::OPERATOR_NOT_NULL) {
             return $query->whereNotNull($key);
         } else if ($operator == self::OPERATOR_BETWEEN) {
-            return $query->whereBetween($key, $value);
+            return $query->whereBetween($key, $value);//USE SPREAD OPERATOR FOR VALUE
         } else if ($operator == self::OPERATOR_NOT_BETWEEN) {
-            return $query->whereNotBetween($key, $value);
+            return $query->whereNotBetween($key, $value);//USE SPREAD OPERATOR FOR VALUE
         } else if ($operator == self::OPERATOR_COLUMN) {
             return $query->whereColumn($key, $operator, $value);
         } else {
             return $query->where($key, $operator, $value);
         }
     }
+    //OLD
+    /*if ($operator == self::OPERATOR_IN) {
+        $query = $query->whereIn($item['key'], $item['value']);
+    } else if ($operator == self::OPERATOR_NOT_IN) {
+        $query = $query->whereNotIn($item['key'], $item['value']);
+    } else if ($operator == self::OPERATOR_NULL) {
+        $query = $query->whereNull($item['key']);
+    } else if ($operator == self::OPERATOR_NOT_NULL) {
+        $query = $query->whereNotNull($item['key']);
+    } else if ($operator == self::OPERATOR_BETWEEN) {
+        $query = $query->whereBetween($item['key'], [$item['value1'], $item['value2']]);
+    } else if ($operator == self::OPERATOR_NOT_BETWEEN) {
+        $query = $query->whereNotBetween($item['key'], [$item['value1'], $item['value2']]);
+    } else if ($operator == self::OPERATOR_COLUMN) {
+        $query = $query->whereColumn($item['key1'], $item['operator'], $item['key2']);
+    } else {
+        $query = $query->where($item['key'], $operator, $item['value']);
+    }*/
 
     private function searchQuery($data = []){
         if (!$this->model)

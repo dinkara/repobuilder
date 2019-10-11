@@ -19,6 +19,10 @@ class RepositoryBuilderServiceProvider extends ServiceProvider
                 RepositoryBuilder::class,
             ]);
         }
+
+        $this->publishes([
+            dirname(__DIR__).'/Support/Lang/en' => resource_path('lang/en'),
+        ]);
     }
 
     /**
