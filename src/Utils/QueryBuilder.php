@@ -39,10 +39,10 @@ class QueryBuilder
      */
     public function getData(){
         try{
-            $query = $this->prepareQuery();
+            $this->prepareQuery();
             $pagination = $this->preparePagination();
-            if(is_array($pagination)){
-                return $query->paginate( ...$this->preparePagination());
+            if(is_array($pagination) && count($pagination) == 2){
+                return $this->query->skip($pagination[0])->paginate($pagination[1]);
             }
         }catch (Exception $e){
             throw new RepoBuilderException($e);
@@ -56,6 +56,7 @@ class QueryBuilder
      */
     public function getQuery(){
         try{
+            $this->prepareQuery();
             return $this->query;
         }catch (Exception $e){
             throw new RepoBuilderException($e);
@@ -135,8 +136,9 @@ class QueryBuilder
     private function preparePagination(){
         try{
             $restQuery = $this->restQueryConverter->getParams();
-            $limit = $this->repo->getModel()->limit;
+            $limit = $this->repo->getModel()->_limit;
             $start = AvailableRestQueryParams::DEFAULT_START;
+
             if( isset($restQuery[AvailableRestQueryParams::_LIMIT])
                 && $restQuery[AvailableRestQueryParams::_LIMIT]
                 && $restQuery[AvailableRestQueryParams::_LIMIT] <= $limit){
@@ -146,8 +148,7 @@ class QueryBuilder
                 && $restQuery[AvailableRestQueryParams::_START]){
                 $start = $restQuery[AvailableRestQueryParams::_START];
             }
-
-            return [$start, $limit];
+            return [$start*$limit, $limit];
         }catch (Exception $e){
             throw new RepoBuilderException($e);
         }
@@ -162,9 +163,9 @@ class QueryBuilder
      */
     private function validateSortItem($item){
         return     isset($item['data'])
-                && isset($item['field'])
-                && is_array($item['data'])
-                && in_array($item['field'], $this->columns);
+            && isset($item['field'])
+            && is_array($item['data'])
+            && in_array($item['field'], $this->columns);
     }
 
     /**
@@ -175,12 +176,12 @@ class QueryBuilder
      */
     private function validateWhereItem($item){
         return     isset($item['operator'])
-                && isset($item['key'])
-                && isset($item['func'])
-                && isset($item['data'])
-                && is_array($item['data'])
-                && in_array($item['key'], $this->columns)
-                && in_array($item['operator'], AvailableRestQueryParams::filters());
+            && isset($item['key'])
+            && isset($item['func'])
+            && isset($item['data'])
+            && is_array($item['data'])
+            && in_array($item['key'], $this->columns)
+            && in_array($item['operator'], AvailableRestQueryParams::filters());
     }
 
 }

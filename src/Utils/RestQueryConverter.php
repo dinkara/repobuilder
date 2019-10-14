@@ -21,7 +21,7 @@ class RestQueryConverter
         AvailableRestQueryParams::_START => AvailableRestQueryParams::DEFAULT_START,
         AvailableRestQueryParams::_LIMIT => AvailableRestQueryParams::DEFAULT_LIMIT,
         AvailableRestQueryParams::_WHERE => [],
-        ];
+    ];
     public function __construct(Request $req)
     {
         try{
@@ -117,10 +117,10 @@ class RestQueryConverter
      */
     private function convertStartQueryParams($start){
         try {
-            if(!is_int($start)){
-                throw new RepoBuilderException(null, trans('repobuilder.exceptions.custom.convertStartQueryParams', ['type' => gettype($start)]));
-            }
-            return (is_int($start) && $start >= 0) ? $start : AvailableRestQueryParams::DEFAULT_START;
+            /*            if(!is_int($start)){
+                            throw new RepoBuilderException(null, trans('repobuilder.exceptions.custom.convertStartQueryParams', ['type' => gettype($start)]));
+                        }*/
+            return ($start >= 0) ? $start : AvailableRestQueryParams::DEFAULT_START;
         }catch (RepoBuilderException $e){
             throw $e;
         } catch (Exception $e){
@@ -136,10 +136,10 @@ class RestQueryConverter
      */
     private function convertLimitQueryParams($limit){
         try {
-            if(!is_int($limit)){
-                throw new RepoBuilderException(null, trans('repobuilder.exceptions.custom.convertLimitQueryParams', ['type' => gettype($limit)]));
-            }
-            return (is_int($limit) && $limit >= 0) ? $limit : AvailableRestQueryParams::DEFAULT_LIMIT;
+            /*            if(!is_int($limit)){
+                            throw new RepoBuilderException(null, trans('repobuilder.exceptions.custom.convertLimitQueryParams', ['type' => gettype($limit)]));
+                        }*/
+            return ($limit >= 0) ? $limit : AvailableRestQueryParams::DEFAULT_LIMIT;
         }catch (RepoBuilderException $e){
             throw $e;
         } catch (Exception $e){
