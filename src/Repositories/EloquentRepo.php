@@ -13,10 +13,12 @@ namespace Dinkara\RepoBuilder\Repositories;
  *
  * @author ndzak
  */
+use Dinkara\RepoBuilder\Utils\QueryBuilder;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use BadMethodCallException;
 use Dinkara\Utils\Filter;
+use Illuminate\Http\Request;
 
 abstract class EloquentRepo implements IRepo {
 
@@ -145,6 +147,11 @@ abstract class EloquentRepo implements IRepo {
         }
 
         return $this->model->delete();
+    }
+
+    public function restSearch(Request $request, $returnQueryBuilder = false) {
+        $queryBuilder = new QueryBuilder($request, $this);
+        return $returnQueryBuilder ? $queryBuilder->getQuery() : $queryBuilder->getData();
     }
 
     public function searchAndPaginate($q, $orderBy = null, $perPage = 10) {

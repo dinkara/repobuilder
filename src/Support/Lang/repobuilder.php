@@ -22,10 +22,11 @@ return [
             'convertWhereQueryParams'   => 'RestQueryConverter: Invalid search query',
         ],
         'custom' => [
-            'convertStartQueryParams' => 'RestQueryConverter: Pagination start expected a positive integer got :type',
-            'convertLimitQueryParams' => 'RestQueryConverter: Pagination limit expected a positive integer got :type',
-            'convertSortQueryParams'  => 'RestQueryConverter: Sort expected a string, got :type',
-            'sortingTypes'            => 'RestQueryConverter: Sort can only be one of asc|desc|ASC|DESC',
+            'convertStartQueryParams'   => 'RestQueryConverter: Pagination start expected a positive integer got :type',
+            'convertLimitQueryParams'   => 'RestQueryConverter: Pagination limit expected a positive integer got :type',
+            'convertSortQueryParams'    => 'RestQueryConverter: Sort expected a string, got :type',
+            'sortingTypes'              => 'RestQueryConverter: Sort can only be one of asc|desc|ASC|DESC',
+            'instanceOfBuilder'         => 'Argument 2 passed to Dinkara\RepoBuilder\Utils\QueryBuilder::__construct() must be an instance of Illuminate\Database\Query\Builder or Sofa\Eloquence\Builder, instance of :type given'
         ],
 
     ],

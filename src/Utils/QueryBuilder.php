@@ -17,13 +17,21 @@ use Exception;
 class QueryBuilder
 {
 
-    public function __construct(Request $req, IRepo $repo)
+    public function __construct(Request $req, IRepo $repo, $eloquentBuilder = null)
     {
         try{
+            if($eloquentBuilder && is_object($eloquentBuilder) &&
+                (get_class($eloquentBuilder) === "Sofa\Eloquence\Builder" ||
+                    strpos(get_class($eloquentBuilder), "Illuminate\Database\Eloquent\Relations") !== false )){
+                $this->eloquentBuilder = $eloquentBuilder;
+            }else{
+                $this->eloquentBuilder = $req->q ? $repo->model()->search(["*" . $req->q . "*"], false) : $repo->model();
+            }
+
             $this->repo = $repo;
             $this->req = $req;
             $this->columns = $this->repo->getModel()->getAllColumnsNames();
-            $this->restQueryConverter = new RestQueryConverter($req);
+            $this->restQueryConverter = new RestQueryConverter($req, $repo->model()->getTable());
         }catch (RepoBuilderException $e){
             throw $e;
         }
@@ -42,7 +50,7 @@ class QueryBuilder
             $this->prepareQuery();
             $pagination = $this->preparePagination();
             if(is_array($pagination) && count($pagination) == 2){
-                return $this->query->skip($pagination[0])->paginate($pagination[1]);
+                return $this->eloquentBuilder->skip($pagination[0])->paginate($pagination[1]);
             }
         }catch (Exception $e){
             throw new RepoBuilderException($e);
@@ -57,7 +65,7 @@ class QueryBuilder
     public function getQuery(){
         try{
             $this->prepareQuery();
-            return $this->query;
+            return $this->eloquentBuilder;
         }catch (Exception $e){
             throw new RepoBuilderException($e);
         }
@@ -71,10 +79,8 @@ class QueryBuilder
      */
     private function prepareQuery(){
         try{
-            $query = $this->repo->getModel();
-            $query = $this->prepareWhere($query);
-            $query = $this->prepareSort($query);
-            $this->query = $query;
+            $this->eloquentBuilder = $this->prepareWhere($this->eloquentBuilder);
+            $this->eloquentBuilder = $this->prepareSort($this->eloquentBuilder);
         }catch (Exception $e){
             throw new RepoBuilderException($e);
         }
@@ -183,5 +189,14 @@ class QueryBuilder
             && in_array($item['key'], $this->columns)
             && in_array($item['operator'], AvailableRestQueryParams::filters());
     }
+
+    /*            if($eloquentBuilder === null || !is_object($eloquentBuilder) ||
+                ( get_class($eloquentBuilder) !== "Sofa\Eloquence\Builder" &&
+                  get_class($eloquentBuilder) !== "Sofa\Eloquence\Builder")){
+                throw new RepoBuilderException(null, trans('repobuilder.exceptions.custom.instanceOfBuilder',
+                    ['type' => is_object($eloquentBuilder) ? get_class($eloquentBuilder) : gettype($eloquentBuilder)]));
+            }else{
+
+            }*/
 
 }

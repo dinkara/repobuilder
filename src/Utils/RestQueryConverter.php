@@ -22,9 +22,10 @@ class RestQueryConverter
         AvailableRestQueryParams::_LIMIT => AvailableRestQueryParams::DEFAULT_LIMIT,
         AvailableRestQueryParams::_WHERE => [],
     ];
-    public function __construct(Request $req)
+    public function __construct(Request $req, $tableName = null)
     {
         try{
+            $this->tableName = $tableName ? $tableName . '.' : '';
             $params = $req->query();
 
             if(count($params) === 0){
@@ -94,7 +95,7 @@ class RestQueryConverter
                 }
 
                 if ($field !== '' && in_array(strtolower($order), AvailableRestQueryParams::sortDirections())) {
-                    $item['data'] = [$field, $order];
+                    $item['data'] = [$this->tableName . $field, $order];
                     $item['field'] = $field;
                     array_push($sortKeys, $item);
                 }else{
@@ -158,9 +159,9 @@ class RestQueryConverter
             $result = [];
             foreach ($where as $key => $item){
                 $operatorStart = strpos($key, "_");
-                if($operatorStart != -1){
+                if($key !== 'q' && $key !== -1){//for sofa eloquence builder
                     $operator = substr($key, $operatorStart, strlen ($key)-1 );
-                    $key = substr($key, 0, $operatorStart);
+                    $key = $this->tableName . substr($key, 0, $operatorStart);
                     $value = $item;
                     switch ($operator){
                         case AvailableRestQueryParams::IN:{
