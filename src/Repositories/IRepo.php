@@ -12,6 +12,8 @@ namespace Dinkara\RepoBuilder\Repositories;
  *
  * @author ndzak
  */
+use Illuminate\Http\Request;
+
 interface IRepo {
 
     function model();
@@ -39,6 +41,8 @@ interface IRepo {
     function save();
 
     function delete();
+
+    function restSearch(Request $request, $query = null, $returnQueryBuilder = false);
 
     function searchAndPaginate($q, $orderBy = null, $perPage = 10);
 

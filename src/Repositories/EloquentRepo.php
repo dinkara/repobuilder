@@ -149,8 +149,8 @@ abstract class EloquentRepo implements IRepo {
         return $this->model->delete();
     }
 
-    public function restSearch(Request $request, $returnQueryBuilder = false) {
-        $queryBuilder = new QueryBuilder($request, $this);
+    public function restSearch(Request $request, $query = null, $returnQueryBuilder = false) {
+        $queryBuilder = new QueryBuilder($request, $this, $query);
         return $returnQueryBuilder ? $queryBuilder->getQuery() : $queryBuilder->getData();
     }
 

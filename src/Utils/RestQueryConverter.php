@@ -161,7 +161,8 @@ class RestQueryConverter
                 $operatorStart = strpos($key, "_");
                 if($key !== 'q' && $key !== -1){//for sofa eloquence builder
                     $operator = substr($key, $operatorStart, strlen ($key)-1 );
-                    $key = $this->tableName . substr($key, 0, $operatorStart);
+                    $columnName = substr($key, 0, $operatorStart);
+                    $key = $this->tableName . $columnName;
                     $value = $item;
                     switch ($operator){
                         case AvailableRestQueryParams::IN:{
@@ -201,7 +202,7 @@ class RestQueryConverter
                         }
 
                     }
-                    $data['key'] = $key;
+                    $data['key'] = $columnName;
                     $data['operator'] = $operator;
                     $result[] = $data;
                 }
