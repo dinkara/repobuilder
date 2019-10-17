@@ -10,6 +10,7 @@ namespace Dinkara\RepoBuilder\Traits;
 use Dinkara\RepoBuilder\Utils\AvailableRestQueryParams;
 use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use DB;
 
 trait ApiModel{
       
