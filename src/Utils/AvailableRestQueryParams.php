@@ -26,12 +26,12 @@ class AvailableRestQueryParams
     const NBTW = '_nbtw';
     const CNT = '_cnt';
     const NCNT = '_ncnt';
-/*    const CONTAINSS = '_containss';
-    const NCONTAINSS = '_ncontainss';*/
+    /*    const CONTAINSS = '_containss';
+        const NCONTAINSS = '_ncontainss';*/
 
     //ADDITIONAL PARAMS
     const _SORT = '_sort';
-    const _START = '_start';
+    const _PAGE = 'page';
     const _LIMIT = '_limit';
     const _WHERE = '_where';
 
@@ -40,7 +40,7 @@ class AvailableRestQueryParams
     const DESC = 'desc';
 
     //DEFAULT VALUES
-    const DEFAULT_START = 0;
+    const DEFAULT_PAGE = 0;
     const DEFAULT_LIMIT = 100;
 
     //Operations
@@ -68,8 +68,8 @@ class AvailableRestQueryParams
             self::NBTW,
             self::CNT,
             self::NCNT,
-/*            self::CONTAINSS,
-            self::NCONTAINSS,*/
+            /*            self::CONTAINSS,
+                        self::NCONTAINSS,*/
         ];
     }
 

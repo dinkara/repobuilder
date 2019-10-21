@@ -30,22 +30,14 @@ trait ApiModel{
      * @param type $orderBy exp. &orderBy=name,caption,asc,id,desc
      * @return type
      */
-    public function searchRelation(Relation $relation, $q, $orderBy = null) {
+    public function searchRelation(Relation $relation, $q) {
+
+        if($q == null){
+            return $relation;
+        }
+
         $query = $q ? $relation->search(["*" . $q . "*"], false) : $relation;
 
-        $orderDirections = ['asc', 'desc'];
-        if($orderBy){
-            $orderByArray = explode(",", $orderBy);
-            $t=0;
-            for($i=0;$i<count($orderByArray);$i++) {
-                if(in_array($orderByArray[$i], $orderDirections)){
-                    for($j=$t;$j<$i;$j++){
-                        $query = $query->orderBy($orderByArray[$j], $orderByArray[$i]);                        
-                    }
-                    $t=$i+1;
-                }
-            }                                                
-        }  
         return $query;
     }
 

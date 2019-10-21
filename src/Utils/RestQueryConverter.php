@@ -18,7 +18,7 @@ class RestQueryConverter
 {
     public $finalParams = [
         AvailableRestQueryParams::_SORT  => [],
-        AvailableRestQueryParams::_START => AvailableRestQueryParams::DEFAULT_START,
+        AvailableRestQueryParams::_PAGE => AvailableRestQueryParams::DEFAULT_PAGE,
         AvailableRestQueryParams::_LIMIT => AvailableRestQueryParams::DEFAULT_LIMIT,
         AvailableRestQueryParams::_WHERE => [],
     ];
@@ -37,9 +37,9 @@ class RestQueryConverter
                 unset($params[AvailableRestQueryParams::_SORT]);
             }
 
-            if(key_exists(AvailableRestQueryParams::_START, $params)){
-                $this->finalParams[AvailableRestQueryParams::_START] = $this->convertStartQueryParams($params[AvailableRestQueryParams::_START]);
-                unset($params[AvailableRestQueryParams::_START]);
+            if(key_exists(AvailableRestQueryParams::_PAGE, $params)){
+                $this->finalParams[AvailableRestQueryParams::_PAGE] = $this->convertStartQueryParams($params[AvailableRestQueryParams::_PAGE]);
+                unset($params[AvailableRestQueryParams::_PAGE]);
             }
 
             if(key_exists(AvailableRestQueryParams::_LIMIT, $params)){
@@ -116,12 +116,9 @@ class RestQueryConverter
      * @param $start
      * @return int
      */
-    private function convertStartQueryParams($start){
+    private function convertStartQueryParams($page){
         try {
-            /*            if(!is_int($start)){
-                            throw new RepoBuilderException(null, trans('repobuilder.exceptions.custom.convertStartQueryParams', ['type' => gettype($start)]));
-                        }*/
-            return ($start >= 0) ? $start : AvailableRestQueryParams::DEFAULT_START;
+            return ($page >= 0) ? $page : AvailableRestQueryParams::DEFAULT_PAGE;
         }catch (RepoBuilderException $e){
             throw $e;
         } catch (Exception $e){
@@ -137,9 +134,6 @@ class RestQueryConverter
      */
     private function convertLimitQueryParams($limit){
         try {
-            /*            if(!is_int($limit)){
-                            throw new RepoBuilderException(null, trans('repobuilder.exceptions.custom.convertLimitQueryParams', ['type' => gettype($limit)]));
-                        }*/
             return ($limit >= 0) ? $limit : AvailableRestQueryParams::DEFAULT_LIMIT;
         }catch (RepoBuilderException $e){
             throw $e;
@@ -223,7 +217,7 @@ class RestQueryConverter
      */
     private function prepareRequestParams(Request $req){
         try {
-            $this->finalParams[AvailableRestQueryParams::_START ] = 0;
+            $this->finalParams[AvailableRestQueryParams::_PAGE ] = 0;
             $this->finalParams[AvailableRestQueryParams::_LIMIT ] = AvailableRestQueryParams::DEFAULT_LIMIT;
 
             $result = [];

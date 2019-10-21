@@ -9,6 +9,7 @@
 namespace Dinkara\RepoBuilder\Utils;
 
 use Dinkara\RepoBuilder\Repositories\IRepo;
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Http\Request;
 use Dinkara\RepoBuilder\Utils\RestQueryConverter;
 use Exception;
@@ -50,7 +51,7 @@ class QueryBuilder
             $this->prepareQuery();
             $pagination = $this->preparePagination();
             if(is_array($pagination) && count($pagination) == 2){
-                return $this->eloquentBuilder->skip($pagination[0])->paginate($pagination[1]);
+                return $this->eloquentBuilder->paginate($pagination[1]);
             }
         }catch (Exception $e){
             throw new RepoBuilderException($e);
@@ -143,18 +144,18 @@ class QueryBuilder
         try{
             $restQuery = $this->restQueryConverter->getParams();
             $limit = $this->repo->getModel()->_limit;
-            $start = AvailableRestQueryParams::DEFAULT_START;
+            $page = AvailableRestQueryParams::DEFAULT_PAGE;
 
             if( isset($restQuery[AvailableRestQueryParams::_LIMIT])
                 && $restQuery[AvailableRestQueryParams::_LIMIT]
                 && $restQuery[AvailableRestQueryParams::_LIMIT] <= $limit){
                 $limit = $restQuery[AvailableRestQueryParams::_LIMIT];
             }
-            if( isset($restQuery[AvailableRestQueryParams::_START])
-                && $restQuery[AvailableRestQueryParams::_START]){
-                $start = $restQuery[AvailableRestQueryParams::_START];
+            if( isset($restQuery[AvailableRestQueryParams::_PAGE])
+                && $restQuery[AvailableRestQueryParams::_PAGE]){
+                $page = $restQuery[AvailableRestQueryParams::_PAGE];
             }
-            return [$start*$limit, $limit];
+            return [$page*$limit, $limit];
         }catch (Exception $e){
             throw new RepoBuilderException($e);
         }
@@ -189,14 +190,5 @@ class QueryBuilder
             && in_array($item['key'], $this->columns)
             && in_array($item['operator'], AvailableRestQueryParams::filters());
     }
-
-    /*            if($eloquentBuilder === null || !is_object($eloquentBuilder) ||
-                ( get_class($eloquentBuilder) !== "Sofa\Eloquence\Builder" &&
-                  get_class($eloquentBuilder) !== "Sofa\Eloquence\Builder")){
-                throw new RepoBuilderException(null, trans('repobuilder.exceptions.custom.instanceOfBuilder',
-                    ['type' => is_object($eloquentBuilder) ? get_class($eloquentBuilder) : gettype($eloquentBuilder)]));
-            }else{
-
-            }*/
 
 }
