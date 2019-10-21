@@ -152,7 +152,7 @@ class RestQueryConverter
         try {
             $result = [];
             foreach ($where as $key => $item){
-                $operatorStart = strpos($key, "_");
+                $operatorStart = strrpos($key, "_");
                 if($key !== 'q' && $key !== -1){//for sofa eloquence builder
                     $operator = substr($key, $operatorStart, strlen ($key)-1 );
                     $columnName = substr($key, 0, $operatorStart);
