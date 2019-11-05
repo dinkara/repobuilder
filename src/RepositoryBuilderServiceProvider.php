@@ -22,6 +22,7 @@ class RepositoryBuilderServiceProvider extends ServiceProvider
 
         $this->publishes([
             dirname(__DIR__).'/src/Support/Lang/en' => resource_path('lang/en'),
+            dirname(__DIR__).'/src/Config' => config_path(),
         ]);
     }
 
