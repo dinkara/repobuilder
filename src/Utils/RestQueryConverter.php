@@ -18,13 +18,16 @@ class RestQueryConverter
 {
     public $finalParams = [
         AvailableRestQueryParams::_SORT  => [],
-        AvailableRestQueryParams::_PAGE => AvailableRestQueryParams::DEFAULT_PAGE,
-        AvailableRestQueryParams::_LIMIT => AvailableRestQueryParams::DEFAULT_LIMIT,
+        AvailableRestQueryParams::_PAGE  => 1,
+        AvailableRestQueryParams::_LIMIT => 100,
         AvailableRestQueryParams::_WHERE => [],
     ];
     public function __construct(Request $req, $tableName = null)
     {
         try{
+            $this->finalParams[AvailableRestQueryParams::_PAGE]  = config('repobuilder.pagination.page');
+            $this->finalParams[AvailableRestQueryParams::_LIMIT] = config('repobuilder.pagination.limit');
+
             $this->tableName = $tableName ? $tableName . '.' : '';
             $params = $req->query();
 
@@ -118,7 +121,7 @@ class RestQueryConverter
      */
     private function convertStartQueryParams($page){
         try {
-            return ($page >= 0) ? $page : AvailableRestQueryParams::DEFAULT_PAGE;
+            return ($page >= 0) ? $page : config('repobuilder.pagination.page');
         }catch (RepoBuilderException $e){
             throw $e;
         } catch (Exception $e){
@@ -134,7 +137,7 @@ class RestQueryConverter
      */
     private function convertLimitQueryParams($limit){
         try {
-            return ($limit >= 0) ? $limit : AvailableRestQueryParams::DEFAULT_LIMIT;
+            return ($limit >= 0) ? $limit : config('repobuilder.pagination.default');
         }catch (RepoBuilderException $e){
             throw $e;
         } catch (Exception $e){

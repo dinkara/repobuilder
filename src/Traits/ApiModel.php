@@ -16,7 +16,9 @@ trait ApiModel{
       
     use Eloquence;
 
-    public $_limit = AvailableRestQueryParams::DEFAULT_LIMIT;
+    public function getLimit() {
+        return isset($this->limit) ? $this->limit : AvailableRestQueryParams::DEFAULT_LIMIT;
+    }
 
     public function getDisplayable() {
         return isset($this->displayable) ? $this->displayable : [];

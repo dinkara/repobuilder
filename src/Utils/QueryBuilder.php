@@ -143,12 +143,13 @@ class QueryBuilder
     private function preparePagination(){
         try{
             $restQuery = $this->restQueryConverter->getParams();
-            $limit = $this->repo->getModel()->_limit;
-            $page = AvailableRestQueryParams::DEFAULT_PAGE;
+            $max = config('repobuilder.pagination.max');
+            $limit = $this->repo->getModel()->getLimit();
+            $page = config('repobuilder.pagination.page');
 
             if( isset($restQuery[AvailableRestQueryParams::_LIMIT])
                 && $restQuery[AvailableRestQueryParams::_LIMIT]
-                && $restQuery[AvailableRestQueryParams::_LIMIT] <= $limit){
+                && $restQuery[AvailableRestQueryParams::_LIMIT] <= $max){
                 $limit = $restQuery[AvailableRestQueryParams::_LIMIT];
             }
             if( isset($restQuery[AvailableRestQueryParams::_PAGE])

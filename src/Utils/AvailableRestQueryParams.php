@@ -26,8 +26,6 @@ class AvailableRestQueryParams
     const NBTW = '_nbtw';
     const CNT = '_cnt';
     const NCNT = '_ncnt';
-    /*    const CONTAINSS = '_containss';
-        const NCONTAINSS = '_ncontainss';*/
 
     //ADDITIONAL PARAMS
     const _SORT = '_sort';
@@ -38,10 +36,6 @@ class AvailableRestQueryParams
     //SORT PARAMS
     const ASC = 'asc';
     const DESC = 'desc';
-
-    //DEFAULT VALUES
-    const DEFAULT_PAGE = 0;
-    const DEFAULT_LIMIT = 100;
 
     //Operations
     const WHERE = 'where';
@@ -68,16 +62,14 @@ class AvailableRestQueryParams
             self::NBTW,
             self::CNT,
             self::NCNT,
-            /*            self::CONTAINSS,
-                        self::NCONTAINSS,*/
         ];
     }
 
     public static function additionalFilters(){
         return [
-            self::START,
-            self::LIMIT,
-            self::SORT,
+            self::_START,
+            self::_LIMIT,
+            self::_SORT,
         ];
     }
 
@@ -89,8 +81,8 @@ class AvailableRestQueryParams
     }
     public static function paginateParams(){
         return [
-            self::START,
-            self::LIMIT,
+            self::_START,
+            self::_LIMIT,
         ];
     }
 
