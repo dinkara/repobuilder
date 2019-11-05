@@ -7,17 +7,18 @@
  */
 
 namespace Dinkara\RepoBuilder\Traits;
-use Dinkara\RepoBuilder\Utils\AvailableRestQueryParams;
 use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use DB;
 
 trait ApiModel{
-      
+
     use Eloquence;
 
     public function getLimit() {
-        return isset($this->limit) ? $this->limit : AvailableRestQueryParams::DEFAULT_LIMIT;
+        return isset($this->limit) ?
+            ($this->limit > config('repobuilder.pagination.max') ? config('repobuilder.pagination.default') : $this->limit)
+            : config('repobuilder.pagination.default');
     }
 
     public function getDisplayable() {
@@ -26,7 +27,7 @@ trait ApiModel{
 
     /**
      * Generate query from input data
-     * 
+     *
      * @param  \Illuminate\Database\Eloquent\Builder  $relation
      * @param type $q exp. ?q=test
      * @param type $orderBy exp. &orderBy=name,caption,asc,id,desc

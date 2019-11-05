@@ -146,7 +146,6 @@ class QueryBuilder
             $max = config('repobuilder.pagination.max');
             $limit = $this->repo->getModel()->getLimit();
             $page = config('repobuilder.pagination.page');
-
             if( isset($restQuery[AvailableRestQueryParams::_LIMIT])
                 && $restQuery[AvailableRestQueryParams::_LIMIT]
                 && $restQuery[AvailableRestQueryParams::_LIMIT] <= $max){

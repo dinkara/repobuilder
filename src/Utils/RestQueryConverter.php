@@ -26,7 +26,7 @@ class RestQueryConverter
     {
         try{
             $this->finalParams[AvailableRestQueryParams::_PAGE]  = config('repobuilder.pagination.page');
-            $this->finalParams[AvailableRestQueryParams::_LIMIT] = config('repobuilder.pagination.limit');
+            $this->finalParams[AvailableRestQueryParams::_LIMIT] = config('repobuilder.pagination.default');
 
             $this->tableName = $tableName ? $tableName . '.' : '';
             $params = $req->query();
@@ -220,8 +220,8 @@ class RestQueryConverter
      */
     private function prepareRequestParams(Request $req){
         try {
-            $this->finalParams[AvailableRestQueryParams::_PAGE ] = 0;
-            $this->finalParams[AvailableRestQueryParams::_LIMIT ] = AvailableRestQueryParams::DEFAULT_LIMIT;
+            $this->finalParams[AvailableRestQueryParams::_PAGE ] = config('repobuilder.pagination.page');
+            $this->finalParams[AvailableRestQueryParams::_LIMIT ] = config('repobuilder.pagination.default');
 
             $result = [];
             if($requestUri = $req->getRequestUri() ){
