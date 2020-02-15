@@ -55,6 +55,8 @@ abstract class EloquentRepo implements IRepo {
 
     public function setModel($model) {
         $this->model = $model;
+
+        return $this->finalize($this->model);
     }
 
     public function firstOrNew($where) {
